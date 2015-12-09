@@ -33,5 +33,10 @@ set_universe(list(df['code']))
                 valuation.market_cap.asc()
             ).limit(10), date=date
             ).dropna()
+            
+ #获取5日均线价格
+     security = g.security
+    # 得到五日均线价格
+    price5 = data[security].mavg(5)
  
  
