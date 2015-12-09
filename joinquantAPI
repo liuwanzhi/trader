@@ -1,2 +1,37 @@
+get_fundamentals(query_object, date=None) 查询财务数据
 
+# 查询'000001.XSHE'的所有市值数据, 时间是2015-10-15
+q = query(
+    valuation
+).filter(
+    valuation.code == '000001.XSHE'
+)
+df = get_fundamentals(q, '2015-10-15')
+
+# 打印出总市值
+log.info(df['market_cap'][0])
+
+# 选出所有的总市值大于1000亿元, 市盈率小于10, 营业总收入大于200亿元的股票
+df = get_fundamentals(query(
+        valuation.code, valuation.market_cap, valuation.pe_ratio, income.total_operating_revenue
+    ).filter(
+        valuation.market_cap > 1000,
+        valuation.pe_ratio < 10,
+        income.total_operating_revenue > 2e10
+    ), date='2015-10-15')
+
+# 选取上面的结果作为universe
+set_universe(list(df['code']))
+
+
+ # 选出低市值的股票，buylist   选取市值最小的10个股票
+ df = get_fundamentals(query(
+                valuation.code,valuation.market_cap
+            ).filter(
+                valuation.code.in_(context.universe)
+            ).order_by(
+                valuation.market_cap.asc()
+            ).limit(10), date=date
+            ).dropna()
+ 
  
